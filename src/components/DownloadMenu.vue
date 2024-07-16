@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { defineEmits } from 'vue';
 
 const emit = defineEmits(['closeMenu']);
 const menuRef = ref(null);
