@@ -2,6 +2,18 @@
 import HeaderMenu from './HeaderMenu.vue'
 import GamesLibraryItems from './GamesLibraryItems.vue'
 import { initialGames } from '@/initialGames';
+import { ref } from 'vue';
+
+const selectedGames = ref([])
+
+function toggleGameSelection(gameName) {
+  const index = selectedGames.value.indexOf(gameName)
+  if (index === -1) {
+    selectedGames.value.push(gameName)
+  } else {
+    selectedGames.value.splice(index, 1)
+  }
+}
 </script>
 
 <template>
@@ -19,7 +31,8 @@ import { initialGames } from '@/initialGames';
         <option class="game-sorting__item" value="by-name">По названию</option>
       </select>
     </div>
-    <GamesLibraryItems :games="initialGames" />
+    <GamesLibraryItems :games="initialGames" :selectedGames="selectedGames"
+      @toggle-game-selection="toggleGameSelection" />
   </div>
 
 </template>

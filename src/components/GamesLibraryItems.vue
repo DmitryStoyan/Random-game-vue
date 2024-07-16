@@ -1,18 +1,28 @@
 <script setup>
 
+const emit = defineEmits(['toggle-game-selection'])
+
 const props = defineProps({
   games: {
     type: Array,
     required: true,
   },
+  selectedGames: {
+    type: Array,
+    required: true,
+  }
 });
+
+function toggleSelection(gameName) {
+  emit('toggle-game-selection', gameName)
+}
 </script>
 
 <template>
   <div class="game-library">
-    <article v-for="(game, index) in games" :key="index" class="game-library__item">
+    <article v-for="(game, index) in games" :key="index" @click="toggleSelection(game.name)" class="game-library__item">
       <img class="game-library__img" :src="game.imgLibrary" :alt="game.name" />
-      <div class="overlay">
+      <div class="overlay" :class="{ overlay_active: selectedGames.includes(game.name) }">
         <img class="overlay-logo" src="../images/random-icon_white.png" alt="Logo" />
       </div>
     </article>
