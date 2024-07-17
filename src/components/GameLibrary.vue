@@ -2,9 +2,13 @@
 import HeaderMenu from './HeaderMenu.vue'
 import GamesLibraryItems from './GamesLibraryItems.vue'
 import { initialGames } from '@/initialGames';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
-const selectedGames = ref([])
+const selectedGames = ref([]);
+const sortBy = ref('');
+const searchQuery = ref('');
+
+const collator = new Intl.Collator('ru');
 
 function toggleGameSelection(gameName) {
   const index = selectedGames.value.indexOf(gameName)
@@ -14,14 +18,32 @@ function toggleGameSelection(gameName) {
     selectedGames.value.splice(index, 1)
   }
 }
+
+function onChangeSelect(event) {
+  sortBy.value = event.target.value;
+}
+
+const filteredAndSortedGames = computed(() => {
+  let games = [...initialGames]
+  if (searchQuery.value) {
+    games = games.filter(game => game.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
+  }
+  if (sortBy.value === 'selected-game') {
+    games = games.filter(game => selectedGames.value.includes(game.name))
+  } else if (sortBy.value === 'by-name') {
+    games = games.sort((a, b) => collator.compare(a.name, b.name))
+  }
+
+  return games
+})
 </script>
 
 <template>
   <div>
     <HeaderMenu />
     <div class="search__wrapper">
-      <input class="input-game-search" type="text" placeholder="Найти игру" />
-      <select class="game-sorting__select" name="game-sorting">
+      <input class="input-game-search" type="text" v-model="searchQuery" placeholder="Найти игру" />
+      <select @change="onChangeSelect" class="game-sorting__select" name="game-sorting">
         <option class="game-sorting__item" value="" disabled selected hidden>
           Сортировать по
         </option>
@@ -31,7 +53,7 @@ function toggleGameSelection(gameName) {
         <option class="game-sorting__item" value="by-name">По названию</option>
       </select>
     </div>
-    <GamesLibraryItems :games="initialGames" :selectedGames="selectedGames"
+    <GamesLibraryItems :games="filteredAndSortedGames" :selectedGames="selectedGames"
       @toggle-game-selection="toggleGameSelection" />
   </div>
 
