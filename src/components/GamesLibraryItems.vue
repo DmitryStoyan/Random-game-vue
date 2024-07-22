@@ -1,6 +1,5 @@
 <script setup>
-
-const emit = defineEmits(['toggle-game-selection'])
+const emit = defineEmits(['toggle-game-selection']);
 
 const props = defineProps({
   games: {
@@ -14,7 +13,7 @@ const props = defineProps({
 });
 
 function toggleSelection(gameName) {
-  emit('toggle-game-selection', gameName)
+  emit('toggle-game-selection', gameName);
 }
 </script>
 

@@ -1,22 +1,31 @@
 <script setup>
-import HeaderMenu from './HeaderMenu.vue'
-import GamesLibraryItems from './GamesLibraryItems.vue'
+import HeaderMenu from './HeaderMenu.vue';
+import GamesLibraryItems from './GamesLibraryItems.vue';
 import { initialGames } from '@/initialGames';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
-const selectedGames = ref([]);
+const props = defineProps({
+  selectedGames: {
+    type: Array,
+    required: true,
+  }
+});
+
+const emit = defineEmits(['update-selected-games']);
+
 const sortBy = ref('');
 const searchQuery = ref('');
 
 const collator = new Intl.Collator('ru');
 
 function toggleGameSelection(gameName) {
-  const index = selectedGames.value.indexOf(gameName)
+  const index = props.selectedGames.indexOf(gameName);
   if (index === -1) {
-    selectedGames.value.push(gameName)
+    props.selectedGames.push(gameName);
   } else {
-    selectedGames.value.splice(index, 1)
+    props.selectedGames.splice(index, 1);
   }
+  emit('update-selected-games', props.selectedGames);
 }
 
 function onChangeSelect(event) {
@@ -24,18 +33,21 @@ function onChangeSelect(event) {
 }
 
 const filteredAndSortedGames = computed(() => {
-  let games = [...initialGames]
+  let games = [...initialGames];
   if (searchQuery.value) {
-    games = games.filter(game => game.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
+    games = games.filter(game => game.name.toLowerCase().includes(searchQuery.value.toLowerCase()));
   }
   if (sortBy.value === 'selected-game') {
-    games = games.filter(game => selectedGames.value.includes(game.name))
+    games = games.filter(game => props.selectedGames.includes(game.name));
   } else if (sortBy.value === 'by-name') {
-    games = games.sort((a, b) => collator.compare(a.name, b.name))
+    games = games.sort((a, b) => collator.compare(a.name, b.name));
   }
+  return games;
+});
 
-  return games
-})
+watch(() => props.selectedGames, () => {
+  emit('update-selected-games', props.selectedGames);
+});
 </script>
 
 <template>
@@ -53,11 +65,11 @@ const filteredAndSortedGames = computed(() => {
         <option class="game-sorting__item" value="by-name">По названию</option>
       </select>
     </div>
-    <GamesLibraryItems :games="filteredAndSortedGames" :selectedGames="selectedGames"
+    <GamesLibraryItems :games="filteredAndSortedGames" :selectedGames="props.selectedGames"
       @toggle-game-selection="toggleGameSelection" />
   </div>
-
 </template>
+
 
 <style scoped>
 .search__wrapper {
