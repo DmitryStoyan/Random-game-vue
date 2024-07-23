@@ -10,6 +10,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['updateIsStarted']);
+
 const cells = 243;
 let isStarted = ref(false);
 
@@ -72,6 +74,7 @@ function start() {
     return;
   } else {
     isStarted.value = true;
+    emit('updateIsStarted', true);
   }
 
   generateItems();
@@ -85,6 +88,7 @@ function start() {
 
   list.addEventListener("transitionend", () => {
     isStarted.value = false;
+    emit('updateIsStarted', false);
     const items = list.querySelectorAll(".list__item");
     const centerItemIndex = Math.floor(items.length / 2);
     const centerItem = items[centerItemIndex];
@@ -103,6 +107,8 @@ onMounted(() => {
 });
 
 watch(() => props.selectedGames, generateItems, { deep: true });
+
+defineExpose({ start })
 </script>
 
 <template>
@@ -113,9 +119,9 @@ watch(() => props.selectedGames, generateItems, { deep: true });
         <ul class="list"></ul>
       </div>
     </div>
-    <button @click="start">Крутить</button>
   </div>
 </template>
+
 <style>
 .roulette {
   position: relative;
