@@ -1,6 +1,6 @@
 <script setup>
-import { initialRouletteImg } from "../initialRouletteImg";
 import { ref, onMounted, watch } from 'vue';
+import { initialRouletteImg } from "../initialRouletteImg";
 
 const props = defineProps({
   selectedGames: {
@@ -10,10 +10,11 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['updateIsStarted']);
+const emit = defineEmits(['updateIsStarted', 'showWarning']);
 
 const cells = 243;
 let isStarted = ref(false);
+let isGamesAdded = ref(false)
 
 function getItem() {
   if (props.selectedGames.length === 0) {
@@ -72,7 +73,12 @@ function generateItems() {
 function start() {
   if (isStarted.value) {
     return;
+  } else if (props.selectedGames.length < 2) {
+    emit('showWarning', true)
+    console.log('Добавь игру')
+    return
   } else {
+    emit('showWarning', false);
     isStarted.value = true;
     emit('updateIsStarted', true);
   }
