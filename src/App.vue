@@ -5,10 +5,12 @@ import GameLibrary from './components/GameLibrary.vue';
 import Roulette from './components/Roulette.vue';
 import MyButton from './components/UI/MyButton.vue';
 import Warning from './components/UI/Warning.vue';
+import Modal from './components/UI/Modal.vue'
 
 const selectedGames = ref([]);
 const rouletteRef = ref(null)
 const showWarning = ref(false)
+const isLibraryOpen = ref(false)
 
 function updateSelectedGames(newSelectedGames) {
   selectedGames.value = newSelectedGames;
@@ -24,20 +26,38 @@ function handleShowWarning(value) {
   showWarning.value = value
   setTimeout(() => {
     showWarning.value = false
-    console.log('!value')
   }, 3000)
+}
+
+function libraryOpened() {
+  isLibraryOpen.value = true
+}
+
+function libraryClosed() {
+  isLibraryOpen.value = false
 }
 
 </script>
 
 <template>
   <div>
-    <Header />
+    <GameLibrary v-if="isLibraryOpen" @close="libraryClosed" :selectedGames="selectedGames"
+      @update-selected-games="updateSelectedGames" />
     <Warning v-if="showWarning" />
+    <Header />
     <Roulette ref="rouletteRef" :selectedGames="selectedGames" @showWarning="handleShowWarning" />
-    <MyButton @click="startRoulette">Крутить!</MyButton>
-    <GameLibrary :selectedGames="selectedGames" @update-selected-games="updateSelectedGames" />
+    <div class="buttons-wrapper">
+      <MyButton @click="startRoulette">Крутить!</MyButton>
+      <MyButton @click="libraryOpened">Библиотека игр</MyButton>
+    </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 2rem 0 0 0;
+}
+</style>

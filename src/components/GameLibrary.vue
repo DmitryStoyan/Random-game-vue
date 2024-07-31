@@ -1,5 +1,5 @@
 <script setup>
-import HeaderMenu from './HeaderMenu.vue';
+// import HeaderMenu from './HeaderMenu.vue';
 import GamesLibraryItems from './GamesLibraryItems.vue';
 import { initialGames } from '@/initialGames';
 import { ref, computed, watch } from 'vue';
@@ -11,7 +11,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['update-selected-games']);
+const emit = defineEmits(['update-selected-games', 'close']);
 
 const sortBy = ref('');
 const searchQuery = ref('');
@@ -52,7 +52,12 @@ watch(() => props.selectedGames, () => {
 
 <template>
   <div>
-    <HeaderMenu />
+    <!-- <HeaderMenu @close="emit('close')" /> -->
+    <div class="header-menu">
+      <button @click="emit('close')" class="game-selection__close-button"></button>
+      <h3 class="game-selection__title">Библиотека игр</h3>
+      <img class="header-menu__logo" src="../images/random-icon_white.png" alt="" />
+    </div>
     <div class="search__wrapper">
       <input class="input-game-search" type="text" v-model="searchQuery" placeholder="Найти игру" />
       <select @change="onChangeSelect" class="game-sorting__select" name="game-sorting">
@@ -72,6 +77,37 @@ watch(() => props.selectedGames, () => {
 
 
 <style scoped>
+.header-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #13161a;
+  padding: 2rem 1rem;
+  /* position: fixed; */
+  /* z-index: 5; */
+}
+
+.game-selection__close-button {
+  background-image: url(@/images/back-button_white.png);
+  background-color: transparent;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 4rem;
+  height: 4rem;
+  border: none;
+  cursor: pointer;
+}
+
+.game-selection__title {
+  font-size: 3rem;
+}
+
+.header-menu__logo {
+  width: 4rem;
+  height: 4rem;
+}
+
 .search__wrapper {
   display: grid;
   grid-template-columns: 3fr 1fr;

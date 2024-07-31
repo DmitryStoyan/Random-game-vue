@@ -1,10 +1,10 @@
-<script setup>
-
+<!-- <script setup>
+const emit = defineEmits(['close']);
 </script>
 
 <template>
   <div class="header-menu">
-    <button class="game-selection__close-button"></button>
+    <button @click="emit('close')" class="game-selection__close-button"></button>
     <h3 class="game-selection__title">Библиотека игр</h3>
     <img class="header-menu__logo" src="../images/random-icon_white.png" alt="" />
   </div>
@@ -40,4 +40,4 @@
   width: 4rem;
   height: 4rem;
 }
-</style>
+</style> -->

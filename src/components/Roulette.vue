@@ -14,7 +14,6 @@ const emit = defineEmits(['updateIsStarted', 'showWarning']);
 
 const cells = 243;
 let isStarted = ref(false);
-let isGamesAdded = ref(false)
 
 function getItem() {
   if (props.selectedGames.length === 0) {
