@@ -51,8 +51,7 @@ watch(() => props.selectedGames, () => {
 </script>
 
 <template>
-  <div>
-    <!-- <HeaderMenu @close="emit('close')" /> -->
+  <div class="game-library">
     <div class="header-menu">
       <button @click="emit('close')" class="game-selection__close-button"></button>
       <h3 class="game-selection__title">Библиотека игр</h3>
@@ -77,12 +76,30 @@ watch(() => props.selectedGames, () => {
 
 
 <style scoped>
+.game-library {
+  width: 100%;
+  min-height: 100vh;
+  height: 100vh;
+  position: absolute;
+  z-index: 5;
+  background: #13161a;
+  /* overflow: hidden; */
+  transition: opacity 0.5s ease;
+  /* overflow-y: auto; */
+}
+
 .header-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #13161a;
-  padding: 2rem 1rem;
+  padding: 0 1rem;
+  width: 100%;
+  max-width: 120rem;
+  z-index: 6;
   /* position: fixed; */
   /* z-index: 5; */
 }
@@ -112,6 +129,7 @@ watch(() => props.selectedGames, () => {
   display: grid;
   grid-template-columns: 3fr 1fr;
   gap: 2rem;
+  padding: 12rem 0 0 0;
 }
 
 .input-game-search {
