@@ -1,16 +1,31 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { useUserStore } from '@/store/userStore';
+
 import Header from './components/Header.vue';
 import GameLibrary from './components/GameLibrary.vue';
 import Roulette from './components/Roulette.vue';
 import MyButton from './components/UI/MyButton.vue';
 import Warning from './components/UI/Warning.vue';
-import Modal from './components/UI/Modal.vue'
 
+
+const userStore = useUserStore();
 const selectedGames = ref([]);
 const rouletteRef = ref(null)
 const showWarning = ref(false)
 const isLibraryOpen = ref(false)
+
+onMounted(() => {
+  onAuthStateChanged(getAuth(), (user) => {
+    if (user) {
+      console.log(user)
+      userStore.userId = user.uid
+    } else {
+      userStore.userId = ''
+    }
+  })
+})
 
 function updateSelectedGames(newSelectedGames) {
   selectedGames.value = newSelectedGames;
@@ -45,6 +60,7 @@ function libraryClosed() {
       @update-selected-games="updateSelectedGames" />
     <Warning v-if="showWarning" />
     <Header />
+    <router-view />
     <Roulette ref="rouletteRef" :selectedGames="selectedGames" @showWarning="handleShowWarning" />
     <div class="buttons-wrapper">
       <MyButton @click="startRoulette">Крутить!</MyButton>
