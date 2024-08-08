@@ -1,14 +1,18 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { getAuth } from 'firebase/auth'
+import { useUserStore } from '@/store/userStore';
 import { getFirestore, setDoc, doc } from 'firebase/firestore'
 import { useRouter } from 'vue-router';
 import { v4 as uuidv4 } from 'uuid'
 
+
+const userStore = useUserStore()
 const db = getFirestore()
 const gameName = ref('')
 const experience = ref('')
 const teammateExperience = ref('')
+const aboutMe = ref('')
+const additionalInformation = ref('')
 const loading = ref(false)
 const router = useRouter()
 
@@ -19,16 +23,17 @@ const addNewPartnerInfo = async () => {
     gameName: gameName.value,
     experience: experience.value,
     teammateExperience: teammateExperience.value,
+    aboutMe: aboutMe.value,
+    additionalInformation: additionalInformation.value,
     createdAt: new Date()
   }
 
-  const userId = getAuth().currentUser?.uid
-  if (userId) {
-    await setDoc(doc(db, `users/${userId}/partnerInfo`, payload.id), payload).then(() => {
-      router.push('/download')
+
+  if (userStore.userId) {
+    await setDoc(doc(db, `users/${userStore.userId}/partnerInfo`, payload.id), payload).then(() => {
+      router.push('/partnerList')
     })
   }
-
   loading.value = false
 }
 </script>
@@ -39,11 +44,22 @@ const addNewPartnerInfo = async () => {
       <h2 class="title">Информация для поиска тиммейтов</h2>
       <form class="form" @submit.prevent="submitForm">
         <label class="label" for="gameName">Для какой игры?</label>
+
         <input v-model="gameName" class="input" type="text" name="gameName">
+
         <label class="label" for="experience">Ваш стаж в игре?</label>
         <input v-model="experience" class="input" type="text" name="experience">
+
         <label class="label" for="teammateExperience">Какой должен быть стаж тиммейта?</label>
         <input v-model="teammateExperience" class="input" type="text" name="teammateExperience">
+
+        <label class="label" for="aboutMe">Обо мне</label>
+        <input v-model="aboutMe" class="input" type="text" name="aboutMe">
+
+        <label class="label" for="additionalInformation">Дополнительная информация</label>
+        <input v-model="additionalInformation" class="input" type="text" name="additionalInformation">
+
+
 
         <button @click="addNewPartnerInfo" class="button" type="submit" :loading="isLoading">Найти тиммейта</button>
       </form>
@@ -64,7 +80,7 @@ const addNewPartnerInfo = async () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 10;
   transition: opacity 0.3s ease;
 }
 

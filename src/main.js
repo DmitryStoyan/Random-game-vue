@@ -1,10 +1,12 @@
 import './assets/main.css'
 
 import { initializeApp } from 'firebase/app'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
+import { useUserStore } from '@/store/userStore'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDkRhUeDZXRKW8O9FyB6lwWI1AS88JFvTQ',
@@ -21,4 +23,5 @@ const app = createApp(App)
 
 app.use(router)
 app.use(createPinia())
+
 app.mount('#app')

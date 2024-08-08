@@ -5,29 +5,30 @@ import Authorization from '@/components/Authorization.vue'
 import GameLibrary from '@/components/GameLibrary.vue'
 import DownloadMenu from '@/components/DownloadMenu.vue'
 import PagePartnerForm from '@/views/PagePartnerForm.vue'
+import PagePartnerList from '@/views/PagePartnerList.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useUserStore } from '@/store/userStore'
 
-// const checkAuth = (to, from, next) => {
-//   let isAuth = false
-//   onAuthStateChanged(getAuth(), (user) => {
-//     if (user && !isAuth) {
-//       isAuth = true
-//       next()
-//     } else if (!user && !isAuth) {
-//       isAuth = true
-//       next('/auth')
-//     }
-//   })
-// }
-
 const checkAuth = (to, from, next) => {
-  const userStore = useUserStore()
-  if (!userStore.userId && to.name !== 'Auth') {
-    next({ name: 'Auth' })
-  } else {
-    next()
-  }
+  const auth = getAuth()
+
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    unsubscribe()
+
+    if (user) {
+      if (to.path === '/auth') {
+        next('/')
+      } else {
+        next()
+      }
+    } else {
+      if (to.path !== '/auth') {
+        next('/auth')
+      } else {
+        next()
+      }
+    }
+  })
 }
 
 const routes = [
@@ -65,6 +66,12 @@ const routes = [
     path: '/teammateForm',
     name: 'TeammateForm',
     component: PagePartnerForm,
+    beforeEnter: checkAuth
+  },
+  {
+    path: '/partnerList',
+    name: 'PartnerList',
+    component: PagePartnerList,
     beforeEnter: checkAuth
   }
 ]
