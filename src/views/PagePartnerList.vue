@@ -7,7 +7,8 @@ import {
   orderBy,
   getDocs,
   deleteDoc,
-  doc
+  doc,
+  where
 } from 'firebase/firestore'
 import { useUserStore } from '@/store/userStore';
 import DeleteModal from '../components/DeleteModal.vue'
@@ -19,6 +20,7 @@ const partnersInfo = ref([])
 const isLoading = ref(true)
 const isDeleteModalVisible = ref(false)
 const currentPartnerId = ref(null);
+const selectedFilterResult = ref('')
 
 
 
@@ -31,13 +33,37 @@ const hideDeleteModal = () => {
   isDeleteModalVisible.value = false
 }
 
-const getAllPartnersInfo = async () => {
-  const getData = query(collection(db, `users/${userStore.userId}/partnerInfo`), orderBy('createdAt', 'desc'))
+const submitFilter = async () => {
+  isLoading.value = true;
 
-  const listDocs = await getDocs(getData)
+  const filterValue = selectedFilterResult.value === 'active' ? true : false;
 
-  return listDocs.docs.map((doc) => doc.data())
-}
+  const listPartnersInfo = await getAllPartnersInfo(true, filterValue);
+  partnersInfo.value = listPartnersInfo;
+  isLoading.value = false;
+};
+
+const getAllPartnersInfo = async (isFilter, filterValue) => {
+  let getData;
+
+  if (isFilter) {
+    getData = query(
+      collection(db, `users/${userStore.userId}/partnerInfo`),
+      orderBy('createdAt', 'desc'),
+      where('isShow', '==', filterValue)
+    );
+  } else {
+    getData = query(
+      collection(db, `users/${userStore.userId}/partnerInfo`),
+      orderBy('createdAt', 'desc')
+    );
+  }
+
+  const querySnapshot = await getDocs(getData);
+  return querySnapshot.docs.map(doc => doc.data());
+};
+
+
 
 const confirmRemovePartner = async () => {
   if (currentPartnerId.value) {
@@ -53,17 +79,28 @@ const confirmRemovePartner = async () => {
 }
 
 onMounted(async () => {
-  const listPartnersInfo = await getAllPartnersInfo()
-  partnersInfo.value = [...listPartnersInfo]
-  console.log(partnersInfo)
-  isLoading.value = false
-})
+  const listPartnersInfo = await getAllPartnersInfo();
+  partnersInfo.value = listPartnersInfo;
+  isLoading.value = false;
+});
 </script>
 
 <template>
   <div class="partner-list">
     <DeleteModal v-if="isDeleteModalVisible" @cancel="hideDeleteModal" @confirm="confirmRemovePartner" />
     <h1 class="title">Список моих запросов для поиска тиммейтов.</h1>
+    <div class="buttons-wrapper">
+      <div class="button-item">
+        <input id="showOn" name="result" type="radio" value="active" v-model="selectedFilterResult">
+        <label for="showOn">Активные запросы</label>
+      </div>
+      <div class="button-item">
+        <input id="showOff" name="result" type="radio" value="notActive" v-model="selectedFilterResult">
+        <label for="showOff">Не активные запросы</label>
+      </div>
+      <button @click="submitFilter" :disabled="!selectedFilterResult">Применить</button>
+      <button @click="resetFilter" :disabled="!selectedFilterResult">Сбросить</button>
+    </div>
     <div v-if="isLoading" class="loading">Загрузка...</div>
     <div v-else-if="!isLoading && !partnersInfo.length" class="message">У Вас еще нет добавленных запросов на поиск
       тиммейтов.</div>
@@ -76,10 +113,11 @@ onMounted(async () => {
         <p class="list-item__text">Обо мне: <span class="meaning">{{ partner.aboutMe }}</span></p>
         <p class="list-item__text">Дополнительная информация: <span class="meaning">{{
           partner.additionalInformation }}</span></p>
-        <p class="list-item__text">Дата создания запроса: <span class="meaning">{{
+        <p class="list-item__text">Запрос создан: <span class="meaning">{{
           partner.createdAt.toDate().toLocaleDateString() }}</span></p>
+        <p class="list-item__text">Состояние запроса: {{ partner.isShow }}</p>
         <div class="buttons">
-          <router-link :to="`/partnerInfo/${partner.id}`">
+          <router-link :to="`/partnerEditing/${partner.id}`">
             <button>Редактировать</button>
           </router-link>
           <button @click="() => showDeleteModal(partner.id)">Удалить</button>
@@ -100,10 +138,15 @@ onMounted(async () => {
   color: #333;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   z-index: 10;
   padding: 20px;
   overflow-y: auto;
+}
+
+.buttons-wrapper {
+  display: flex;
+  margin: 0 0 2rem 0;
 }
 
 .lists {
@@ -129,6 +172,7 @@ onMounted(async () => {
 }
 
 .title {
+  text-align: center;
   font-size: 2rem;
   margin-bottom: 20px;
   color: #1e90ff;

@@ -6,6 +6,7 @@ import GameLibrary from '@/components/GameLibrary.vue'
 import DownloadMenu from '@/components/DownloadMenu.vue'
 import PagePartnerForm from '@/views/PagePartnerForm.vue'
 import PagePartnerList from '@/views/PagePartnerList.vue'
+import PagePartnerEditing from '@/views/PagePartnerEditing.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useUserStore } from '@/store/userStore'
 
@@ -72,6 +73,12 @@ const routes = [
     path: '/partnerList',
     name: 'PartnerList',
     component: PagePartnerList,
+    beforeEnter: checkAuth
+  },
+  {
+    path: '/partnerEditing/:id',
+    name: 'PartnerEditing',
+    component: PagePartnerEditing,
     beforeEnter: checkAuth
   }
 ]

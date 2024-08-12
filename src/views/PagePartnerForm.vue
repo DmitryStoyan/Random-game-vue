@@ -25,6 +25,7 @@ const addNewPartnerInfo = async () => {
     teammateExperience: teammateExperience.value,
     aboutMe: aboutMe.value,
     additionalInformation: additionalInformation.value,
+    isShow: true,
     createdAt: new Date()
   }
 
@@ -54,10 +55,11 @@ const addNewPartnerInfo = async () => {
         <input v-model="teammateExperience" class="input" type="text" name="teammateExperience">
 
         <label class="label" for="aboutMe">Обо мне</label>
-        <input v-model="aboutMe" class="input" type="text" name="aboutMe">
+        <textarea v-model="aboutMe" class="input" name="aboutMe" cols="10" rows="5"></textarea>
 
         <label class="label" for="additionalInformation">Дополнительная информация</label>
-        <input v-model="additionalInformation" class="input" type="text" name="additionalInformation">
+        <textarea v-model="additionalInformation" class="input" name="additionalInformation" cols="10"
+          rows="7"></textarea>
 
 
 

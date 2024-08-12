@@ -17,63 +17,62 @@ const showWarning = ref(false)
 const isLibraryOpen = ref(false)
 
 onMounted(() => {
-  onAuthStateChanged(getAuth(), (user) => {
-    if (user) {
-      console.log(user)
-      userStore.userId = user.uid
-    } else {
-      userStore.userId = ''
-    }
-  })
+	onAuthStateChanged(getAuth(), (user) => {
+		if (user) {
+			userStore.userId = user.uid
+		} else {
+			userStore.userId = ''
+		}
+	})
 })
 
 function updateSelectedGames(newSelectedGames) {
-  selectedGames.value = newSelectedGames;
+	selectedGames.value = newSelectedGames;
 }
 
 function startRoulette() {
-  if (rouletteRef.value) {
-    rouletteRef.value.start()
-  }
+	if (rouletteRef.value) {
+		rouletteRef.value.start()
+	}
 }
 
 function handleShowWarning(value) {
-  showWarning.value = value
-  setTimeout(() => {
-    showWarning.value = false
-  }, 3000)
+	showWarning.value = value
+	setTimeout(() => {
+		showWarning.value = false
+	}, 3000)
 }
 
 function libraryOpened() {
-  isLibraryOpen.value = true
+	isLibraryOpen.value = true
 }
 
 function libraryClosed() {
-  isLibraryOpen.value = false
+	isLibraryOpen.value = false
 }
 
 </script>
 
 <template>
-  <div>
-    <GameLibrary v-if="isLibraryOpen" @close="libraryClosed" :selectedGames="selectedGames"
-      @update-selected-games="updateSelectedGames" />
-    <Warning v-if="showWarning" />
-    <Header />
-    <router-view />
-    <Roulette ref="rouletteRef" :selectedGames="selectedGames" @showWarning="handleShowWarning" />
-    <div class="buttons-wrapper">
-      <MyButton @click="startRoulette">Крутить!</MyButton>
-      <MyButton @click="libraryOpened">Библиотека игр</MyButton>
-    </div>
-  </div>
+	<div>
+		<GameLibrary v-if="isLibraryOpen" @close="libraryClosed" :selectedGames="selectedGames"
+			@update-selected-games="updateSelectedGames" />
+		<Warning v-if="showWarning" />
+		<Header />
+		<router-view />
+		<Roulette ref="rouletteRef" :selectedGames="selectedGames" @showWarning="handleShowWarning" />
+		<div class="buttons-wrapper">
+			<MyButton @click="startRoulette">Крутить!</MyButton>
+			<MyButton @click="libraryOpened">Библиотека игр</MyButton>
+		</div>
+	</div>
 </template>
 
 <style scoped>
 .buttons-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin: 2rem 0 0 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	margin: 2rem 0 0 0;
 }
 </style>
