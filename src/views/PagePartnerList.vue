@@ -33,35 +33,49 @@ const hideDeleteModal = () => {
   isDeleteModalVisible.value = false
 }
 
+
 const submitFilter = async () => {
   isLoading.value = true;
 
-  const filterValue = selectedFilterResult.value === 'active' ? true : false;
+  let listPartnersInfo;
 
-  const listPartnersInfo = await getAllPartnersInfo(true, filterValue);
+  if (selectedFilterResult.value === 'active') {
+    listPartnersInfo = await getAllPartnersInfo(true, true);
+  } else if (selectedFilterResult.value === 'notActive') {
+    listPartnersInfo = await getAllPartnersInfo(true, false);
+  } else if (selectedFilterResult.value === 'dateAsc') {
+    listPartnersInfo = await getAllPartnersInfo(false, null, 'asc');
+  } else if (selectedFilterResult.value === 'dateDesc') {
+    listPartnersInfo = await getAllPartnersInfo(false, null, 'desc');
+  } else {
+    // Если выбрано "Все запросы", сбросить фильтр и получить все запросы
+    listPartnersInfo = await getAllPartnersInfo();
+  }
+
   partnersInfo.value = listPartnersInfo;
   isLoading.value = false;
 };
 
-const getAllPartnersInfo = async (isFilter, filterValue) => {
+const getAllPartnersInfo = async (isFilter = false, filterValue = null, sortByDate = 'desc') => {
   let getData;
 
   if (isFilter) {
     getData = query(
       collection(db, `users/${userStore.userId}/partnerInfo`),
-      orderBy('createdAt', 'desc'),
-      where('isShow', '==', filterValue)
+      where('isShow', '==', filterValue),
+      orderBy('createdAt', sortByDate)
     );
   } else {
     getData = query(
       collection(db, `users/${userStore.userId}/partnerInfo`),
-      orderBy('createdAt', 'desc')
+      orderBy('createdAt', sortByDate)
     );
   }
 
   const querySnapshot = await getDocs(getData);
-  return querySnapshot.docs.map(doc => doc.data());
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
+
 
 
 
@@ -89,7 +103,14 @@ onMounted(async () => {
   <div class="partner-list">
     <DeleteModal v-if="isDeleteModalVisible" @cancel="hideDeleteModal" @confirm="confirmRemovePartner" />
     <h1 class="title">Список моих запросов для поиска тиммейтов.</h1>
-    <div class="buttons-wrapper">
+    <select name="" v-model="selectedFilterResult" @change="submitFilter">
+      <option value="">Все запросы</option>
+      <option value="active">Активные запросы</option>
+      <option value="notActive">Не активные запросы</option>
+      <option value="dateAsc">Дата создания по возрастанию</option>
+      <option value="dateDesc">Дата создания по убыванию</option>
+    </select>
+    <!-- <div class="buttons-wrapper">
       <div class="button-item">
         <input id="showOn" name="result" type="radio" value="active" v-model="selectedFilterResult">
         <label for="showOn">Активные запросы</label>
@@ -99,8 +120,8 @@ onMounted(async () => {
         <label for="showOff">Не активные запросы</label>
       </div>
       <button @click="submitFilter" :disabled="!selectedFilterResult">Применить</button>
-      <button @click="resetFilter" :disabled="!selectedFilterResult">Сбросить</button>
-    </div>
+      <button @click="clearFilter" :disabled="!selectedFilterResult">Сбросить</button>
+    </div> -->
     <div v-if="isLoading" class="loading">Загрузка...</div>
     <div v-else-if="!isLoading && !partnersInfo.length" class="message">У Вас еще нет добавленных запросов на поиск
       тиммейтов.</div>
@@ -115,7 +136,7 @@ onMounted(async () => {
           partner.additionalInformation }}</span></p>
         <p class="list-item__text">Запрос создан: <span class="meaning">{{
           partner.createdAt.toDate().toLocaleDateString() }}</span></p>
-        <p class="list-item__text">Состояние запроса: {{ partner.isShow }}</p>
+        <p class="list-item__text">Состояние запроса: {{ partner.isShow ? 'Активен' : 'Не активен' }}</p>
         <div class="buttons">
           <router-link :to="`/partnerEditing/${partner.id}`">
             <button>Редактировать</button>

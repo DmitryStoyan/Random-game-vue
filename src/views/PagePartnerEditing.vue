@@ -34,6 +34,7 @@ const getData = async () => {
         return stage
       })
     }
+    data.isShow = data.isShow ? 'active' : 'notActive'
     partner.value = data
   }
 
@@ -44,8 +45,7 @@ const getData = async () => {
 const savePartner = async () => {
   isLoading.value = true
 
-  // Преобразование значения в булевое перед сохранением
-  partner.value.isShow = partner.value.isShow === 'active' ? true : false;
+  partner.value.isShow = partner.value.isShow === 'active';
 
   await updateDoc(docref, { ...partner.value })
   isLoading.value = false

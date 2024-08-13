@@ -21,13 +21,13 @@ const items = computed(() => [
   {
     label: 'Библиотека игр',
     icon: new URL('../images/icons/library.png', import.meta.url).href,
-    path: '/library',
+    path: '/gameLibrary',
     show: !!userStore.userId,
   },
   {
     label: 'Поиск тиммейтов',
     icon: new URL('../images/icons/teammate.png', import.meta.url).href,
-    path: '/teammate',
+    path: '/teammateForm',
     show: !!userStore.userId,
   },
   {
@@ -37,6 +37,10 @@ const items = computed(() => [
     show: !!userStore.userId,
   },
 ]);
+
+const navigateTo = (path) => {
+  router.push(path)
+}
 
 const signOutMethod = async () => {
   await signOut(getAuth())
@@ -53,7 +57,7 @@ function toggleMenu() {
     <a class="header__logo" href="#">Random Game</a>
     <ul class="header__navigation">
       <li v-for="item in items" :key="item.label" class="header__navigation-item">
-        <span v-if="item.show">
+        <span v-if="item.show" @click="navigateTo(item.path)">
           <img :src="item.icon" alt="icon" class="header__navigation-icon" />
           <button class="header__navigation-button">
             {{ item.label }}
