@@ -31,6 +31,12 @@ const items = computed(() => [
     show: !!userStore.userId,
   },
   {
+    label: 'Запросы',
+    icon: new URL('../images/icons/teammate.png', import.meta.url).href,
+    path: '/allPartnerRequests',
+    show: !!userStore.userId,
+  },
+  {
     label: 'Скачать приложение',
     icon: new URL('../images/icons/download.png', import.meta.url).href,
     path: '/download',

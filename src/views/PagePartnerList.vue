@@ -48,7 +48,6 @@ const submitFilter = async () => {
   } else if (selectedFilterResult.value === 'dateDesc') {
     listPartnersInfo = await getAllPartnersInfo(false, null, 'desc');
   } else {
-    // Если выбрано "Все запросы", сбросить фильтр и получить все запросы
     listPartnersInfo = await getAllPartnersInfo();
   }
 
@@ -110,18 +109,6 @@ onMounted(async () => {
       <option value="dateAsc">Дата создания по возрастанию</option>
       <option value="dateDesc">Дата создания по убыванию</option>
     </select>
-    <!-- <div class="buttons-wrapper">
-      <div class="button-item">
-        <input id="showOn" name="result" type="radio" value="active" v-model="selectedFilterResult">
-        <label for="showOn">Активные запросы</label>
-      </div>
-      <div class="button-item">
-        <input id="showOff" name="result" type="radio" value="notActive" v-model="selectedFilterResult">
-        <label for="showOff">Не активные запросы</label>
-      </div>
-      <button @click="submitFilter" :disabled="!selectedFilterResult">Применить</button>
-      <button @click="clearFilter" :disabled="!selectedFilterResult">Сбросить</button>
-    </div> -->
     <div v-if="isLoading" class="loading">Загрузка...</div>
     <div v-else-if="!isLoading && !partnersInfo.length" class="message">У Вас еще нет добавленных запросов на поиск
       тиммейтов.</div>

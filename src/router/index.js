@@ -1,12 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Header from '@/components/Header.vue'
+import PageHome from '@/views/PageHome.vue'
 import Authorization from '@/components/Authorization.vue'
 import GameLibrary from '@/components/GameLibrary.vue'
 import DownloadMenu from '@/components/DownloadMenu.vue'
 import PagePartnerForm from '@/views/PagePartnerForm.vue'
 import PagePartnerList from '@/views/PagePartnerList.vue'
 import PagePartnerEditing from '@/views/PagePartnerEditing.vue'
+import PageAllPartnerRequests from '@/views/PageAllPartnerRequests.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useUserStore } from '@/store/userStore'
 
@@ -36,7 +38,7 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Header,
+    component: PageHome,
     beforeEnter: checkAuth
   },
   {
@@ -73,6 +75,12 @@ const routes = [
     path: '/partnerList',
     name: 'PartnerList',
     component: PagePartnerList,
+    beforeEnter: checkAuth
+  },
+  {
+    path: '/allPartnerRequests',
+    name: 'AllPartnerRequests',
+    component: PageAllPartnerRequests,
     beforeEnter: checkAuth
   },
   {
