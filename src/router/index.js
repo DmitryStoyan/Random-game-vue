@@ -9,6 +9,7 @@ import PagePartnerForm from '@/views/PagePartnerForm.vue'
 import PagePartnerList from '@/views/PagePartnerList.vue'
 import PagePartnerEditing from '@/views/PagePartnerEditing.vue'
 import PageAllPartnerRequests from '@/views/PageAllPartnerRequests.vue'
+import PageMyProfile from '@/views/PageMyProfile.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useUserStore } from '@/store/userStore'
 
@@ -87,6 +88,12 @@ const routes = [
     path: '/partnerEditing/:id',
     name: 'PartnerEditing',
     component: PagePartnerEditing,
+    beforeEnter: checkAuth
+  },
+  {
+    path: '/myProfile',
+    name: 'MyProfile',
+    component: PageMyProfile,
     beforeEnter: checkAuth
   }
 ]

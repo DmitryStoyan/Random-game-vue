@@ -4,6 +4,7 @@ import { useUserStore } from '@/store/userStore';
 import { getFirestore, setDoc, doc } from 'firebase/firestore'
 import { useRouter } from 'vue-router';
 import { v4 as uuidv4 } from 'uuid'
+import Header from '@/components/Header.vue'
 
 
 const userStore = useUserStore()
@@ -41,6 +42,7 @@ const addNewPartnerInfo = async () => {
 
 <template>
   <div class="partnerInfoForm">
+    <Header />
     <div class="wrapper">
       <h2 class="title">Информация для поиска тиммейтов</h2>
       <form class="form" @submit.prevent="submitForm">
@@ -61,9 +63,8 @@ const addNewPartnerInfo = async () => {
         <textarea v-model="additionalInformation" class="input" name="additionalInformation" cols="10"
           rows="7"></textarea>
 
-
-
-        <button @click="addNewPartnerInfo" class="button" type="submit" :loading="isLoading">Найти тиммейта</button>
+        <button @click="addNewPartnerInfo" class="button" type="submit" :loading="isLoading">Найти
+          тиммейта</button>
       </form>
     </div>
   </div>
@@ -76,22 +77,22 @@ const addNewPartnerInfo = async () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: white;
-  color: black;
+  background: black;
+  color: white;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   z-index: 10;
   transition: opacity 0.3s ease;
 }
 
 .wrapper {
-  border: 1px gray solid;
-  box-shadow: 10px 20px 20px 7px rgba(0, 0, 0, 0.1);
-  /* padding: 3rem 5rem; */
-  width: 30rem;
-  text-align: center;
+  padding: 3rem 5rem;
+  width: 40rem;
+  padding: 2rem;
+  margin: 4rem auto 0;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .subtitle-text {
@@ -106,6 +107,7 @@ const addNewPartnerInfo = async () => {
 }
 
 .title {
+  color: #333;
   text-align: center;
 }
 
@@ -117,6 +119,7 @@ const addNewPartnerInfo = async () => {
 }
 
 .label {
+  color: #555;
   margin: 0 0 0.5rem 3rem;
 }
 

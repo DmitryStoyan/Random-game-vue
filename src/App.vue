@@ -26,45 +26,45 @@ onMounted(() => {
   })
 })
 
-function updateSelectedGames(newSelectedGames) {
-  selectedGames.value = newSelectedGames;
-}
+// function updateSelectedGames(newSelectedGames) {
+//   selectedGames.value = newSelectedGames;
+// }
 
-function startRoulette() {
-  if (rouletteRef.value) {
-    rouletteRef.value.start()
-  }
-}
+// function startRoulette() {
+//   if (rouletteRef.value) {
+//     rouletteRef.value.start()
+//   }
+// }
 
-function handleShowWarning(value) {
-  showWarning.value = value
-  setTimeout(() => {
-    showWarning.value = false
-  }, 3000)
-}
+// function handleShowWarning(value) {
+//   showWarning.value = value
+//   setTimeout(() => {
+//     showWarning.value = false
+//   }, 3000)
+// }
 
-function libraryOpened() {
-  isLibraryOpen.value = true
-}
+// function libraryOpened() {
+//   isLibraryOpen.value = true
+// }
 
-function libraryClosed() {
-  isLibraryOpen.value = false
-}
+// function libraryClosed() {
+//   isLibraryOpen.value = false
+// }
 
 </script>
 
 <template>
   <div>
-    <GameLibrary v-if="isLibraryOpen" @close="libraryClosed" :selectedGames="selectedGames"
+    <!-- <GameLibrary v-if="isLibraryOpen" @close="libraryClosed" :selectedGames="selectedGames"
       @update-selected-games="updateSelectedGames" />
-    <Warning v-if="showWarning" />
+    <Warning v-if="showWarning" /> -->
     <Header />
     <router-view />
-    <Roulette ref="rouletteRef" :selectedGames="selectedGames" @showWarning="handleShowWarning" />
-    <div class="buttons-wrapper">
+    <!-- <Roulette ref="rouletteRef" :selectedGames="selectedGames" @showWarning="handleShowWarning" /> -->
+    <!-- <div class="buttons-wrapper">
       <MyButton @click="startRoulette">Крутить!</MyButton>
       <MyButton @click="libraryOpened">Библиотека игр</MyButton>
-    </div>
+    </div> -->
   </div>
 </template>
 

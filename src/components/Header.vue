@@ -37,6 +37,12 @@ const items = computed(() => [
     show: !!userStore.userId,
   },
   {
+    label: 'Личный кабинет',
+    icon: new URL('../images/icons/profile.svg', import.meta.url).href,
+    path: '/myProfile',
+    show: !!userStore.userId,
+  },
+  {
     label: 'Скачать приложение',
     icon: new URL('../images/icons/download.png', import.meta.url).href,
     path: '/download',
@@ -60,28 +66,34 @@ function toggleMenu() {
 
 <template>
   <header class="header">
-    <a class="header__logo" href="#">Random Game</a>
-    <ul class="header__navigation">
-      <li v-for="item in items" :key="item.label" class="header__navigation-item">
-        <span v-if="item.show" @click="navigateTo(item.path)">
-          <img :src="item.icon" alt="icon" class="header__navigation-icon" />
-          <button class="header__navigation-button">
-            {{ item.label }}
-          </button>
-        </span>
-      </li>
-    </ul>
-    <span v-if="userStore.userId" @click="signOutMethod" class="header__buttonwrapper">
-      <img src="../images/icons/exit.png" alt="icon" class="header__navigation-icon" />
-      <button class="header__navigation-button">Выход</button>
-    </span>
+    <div class="header-wrapper">
+      <a class="header__logo" href="#">Random Game</a>
+      <ul class="header__navigation">
+        <li v-for="item in items" :key="item.label" class="header__navigation-item">
+          <span v-if="item.show" @click="navigateTo(item.path)">
+            <img :src="item.icon" alt="icon" class="header__navigation-icon" />
+            <button class="header__navigation-button">
+              {{ item.label }}
+            </button>
+          </span>
+        </li>
+      </ul>
+      <span v-if="userStore.userId" @click="signOutMethod" class="header__buttonwrapper">
+        <img src="../images/icons/exit.png" alt="icon" class="header__navigation-icon" />
+        <button class="header__navigation-button">Выход</button>
+      </span>
+    </div>
     <DownloadMenu v-if="isOpened" @closeMenu="toggleMenu" />
   </header>
 </template>
 
 <style scoped>
 .header {
-  padding: 4rem 0 0 0;
+  padding: 2rem 0 0 0;
+  max-height: 5rem;
+}
+
+.header-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;

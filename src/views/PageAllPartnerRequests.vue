@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { getFirestore, collectionGroup, query, where, getDocs } from 'firebase/firestore';
+import Header from '@/components/Header.vue';
 
 const db = getFirestore()
 const activeRequests = ref([])
@@ -30,6 +31,7 @@ onMounted(() => {
 
 <template>
   <div class="content">
+    <Header />
     <h1 class="title">Запросы на поиск тиммейтов</h1>
     <div v-if="isLoading" class="loading">Загрузка...</div>
     <div v-else-if="!activeRequests.length" class="message">Нет активных запросов на поиск тиммейтов.</div>
@@ -55,19 +57,12 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: white;
-  color: black;
+  background: black;
+  color: white;
   display: flex;
   flex-direction: column;
   z-index: 10;
   transition: opacity 0.3s ease;
-}
-
-.title {
-  text-align: center;
-  font-size: 1.8rem;
-  color: #333;
-  margin-bottom: 20px;
 }
 
 .lists {
@@ -93,10 +88,10 @@ onMounted(() => {
 }
 
 .title {
+  margin: 2rem 0 2rem 0;
   text-align: center;
   font-size: 2rem;
-  margin-bottom: 20px;
-  color: #1e90ff;
+  color: white;
 }
 
 .loading {
