@@ -7,7 +7,7 @@ import { getAuth, updateProfile, updatePassword } from 'firebase/auth'
 const userStore = useUserStore()
 const db = getFirestore()
 
-const displayName = ref('')
+const userName = ref('')
 const displayUsername = ref('')
 const email = ref('')
 const age = ref('')
@@ -25,7 +25,7 @@ const loadUserData = async () => {
     const userDoc = await getDoc(doc(db, `users/${userStore.userId}/userInfo`, userStore.userId))
     if (userDoc.exists()) {
       const userData = userDoc.data()
-      displayName.value = userData.displayName || ''
+      userName.value = userData.username || ''
       email.value = user.email || ''
       age.value = userData.age || ''
       profilePictureUrl.value = userData.profilePictureUrl || ''
@@ -38,7 +38,7 @@ const loadUserData = async () => {
 const saveUserData = async () => {
   if (userStore.userId) {
     const userData = {
-      displayName: displayName.value,
+      userName: userName.value,
       displayUsername: displayUsername.value,
       email: email.value,
       age: age.value,
@@ -52,7 +52,7 @@ const saveUserData = async () => {
     // Обновление данных профиля в Firebase Authentication
     if (user) {
       await updateProfile(user, {
-        displayName: displayName.value,
+        userName: userName.value,
         displayUsername: displayUsername.value,
         photoURL: profilePictureUrl.value
       })
@@ -78,8 +78,8 @@ loadUserData()
     <div class="profile-container">
       <h1>Мой профиль</h1>
       <div class="form-group">
-        <label for="displayName">Имя:</label>
-        <input v-model="displayName" type="text" id="displayName" />
+        <label for="userName">Имя:</label>
+        <input v-model="userName" type="text" id="userName" />
       </div>
       <div class="form-group">
         <label for="displayUsername">Username:</label>

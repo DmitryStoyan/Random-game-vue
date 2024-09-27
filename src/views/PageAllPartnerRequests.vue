@@ -45,6 +45,8 @@ onMounted(() => {
             }}</span></p>
         <p class="list-item__text">Запрос создан: <span class="meaning">{{ new Date(request.createdAt.seconds *
           1000).toLocaleDateString() }}</span></p>
+        <p class="list-item__text">User Name игрока: <span class="meaning">{{ }}</span></p>
+
       </div>
     </div>
   </div>

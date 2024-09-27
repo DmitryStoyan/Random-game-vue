@@ -1,10 +1,16 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { useUserStore } from '@/store/userStore'
 import { useRouter } from 'vue-router';
+
+const userStore = useUserStore()
+
 
 const email = ref('')
 const password = ref('')
+const username = ref('')
 const isLogin = ref(true)
 const isLoading = ref(false)
 const router = useRouter()
@@ -32,7 +38,19 @@ const submitButtonText = computed(() => {
 const signUp = async () => {
   isLoading.value = true;
   try {
-    await createUserWithEmailAndPassword(getAuth(), email.value, password.value)
+    const auth = getAuth()
+    const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value)
+
+    const user = userCredential.user;
+
+    userStore.userId = user.uid;
+
+    const db = getFirestore()
+    await setDoc(doc(db, `users/${user.uid}/userInfo`, user.uid), {
+      username: username.value,
+      email: email.value,
+    });
+
     router.push('/')
   } catch (error) {
     console.log(error.message)
@@ -70,7 +88,11 @@ const submitForm = () => {
       <span class="subtitle-text">{{ subtitleText }}</span>
       <a class="link-text" @click="toggleAuth">{{ linkAccountText }}</a>
       <form class="form" @submit.prevent="submitForm">
-        <label class="label" for="username">Email</label>
+
+        <label class="label" for="username">Username</label>
+        <input v-model="username" class="input" type="text" name="username">
+
+        <label class="label" for="email">Email</label>
         <input v-model="email" class="input" type="text" name="email">
         <label class="label" for="password">Пароль</label>
         <input v-model="password" class="input" type="password" name="password">
