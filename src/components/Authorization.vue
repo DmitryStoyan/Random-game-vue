@@ -10,7 +10,7 @@ const userStore = useUserStore()
 
 const email = ref('')
 const password = ref('')
-const username = ref('')
+const userName = ref('')
 const isLogin = ref(true)
 const isLoading = ref(false)
 const router = useRouter()
@@ -47,7 +47,7 @@ const signUp = async () => {
 
     const db = getFirestore()
     await setDoc(doc(db, `users/${user.uid}/userInfo`, user.uid), {
-      username: username.value,
+      userName: userName.value,
       email: email.value,
     });
 
@@ -90,7 +90,7 @@ const submitForm = () => {
       <form class="form" @submit.prevent="submitForm">
 
         <label class="label" for="username">Username</label>
-        <input v-model="username" class="input" type="text" name="username">
+        <input v-model="userName" class="input" type="text" name="username">
 
         <label class="label" for="email">Email</label>
         <input v-model="email" class="input" type="text" name="email">
@@ -123,7 +123,6 @@ const submitForm = () => {
 .authorization-wrapper {
   border: 1px gray solid;
   box-shadow: 10px 20px 20px 7px rgba(0, 0, 0, 0.1);
-  /* padding: 3rem 5rem; */
   width: 30rem;
   text-align: center;
 }

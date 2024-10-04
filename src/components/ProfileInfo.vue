@@ -8,7 +8,6 @@ const userStore = useUserStore()
 const db = getFirestore()
 
 const userName = ref('')
-const displayUsername = ref('')
 const email = ref('')
 const age = ref('')
 const profilePictureUrl = ref('')
@@ -18,14 +17,12 @@ const password = ref('')
 const auth = getAuth()
 const user = auth.currentUser
 
-// Загрузка данных пользователя из Firestore
 const loadUserData = async () => {
   if (userStore.userId) {
-    // Путь к документу: users/{userId}/userInfo/{userId}
     const userDoc = await getDoc(doc(db, `users/${userStore.userId}/userInfo`, userStore.userId))
     if (userDoc.exists()) {
       const userData = userDoc.data()
-      userName.value = userData.username || ''
+      userName.value = userData.userName || ''
       email.value = user.email || ''
       age.value = userData.age || ''
       profilePictureUrl.value = userData.profilePictureUrl || ''
@@ -39,21 +36,19 @@ const saveUserData = async () => {
   if (userStore.userId) {
     const userData = {
       userName: userName.value,
-      displayUsername: displayUsername.value,
       email: email.value,
       age: age.value,
       profilePictureUrl: profilePictureUrl.value,
       aboutMe: aboutMe.value,
     }
 
-    // Сохранение данных в Firestore: users/{userId}/userInfo/{userId}
+    // Сохранение данных в Firestore
     await setDoc(doc(db, `users/${userStore.userId}/userInfo`, userStore.userId), userData, { merge: true })
 
-    // Обновление данных профиля в Firebase Authentication
+    // Обновление данных профиля в Firebase
     if (user) {
       await updateProfile(user, {
         userName: userName.value,
-        displayUsername: displayUsername.value,
         photoURL: profilePictureUrl.value
       })
 
@@ -67,7 +62,7 @@ const saveUserData = async () => {
   }
 }
 
-// Загрузка данных пользователя при монтировании компонента
+// Загрузка данных пользователя
 loadUserData()
 </script>
 
@@ -78,12 +73,8 @@ loadUserData()
     <div class="profile-container">
       <h1>Мой профиль</h1>
       <div class="form-group">
-        <label for="userName">Имя:</label>
+        <label for="userName">Никнейм:</label>
         <input v-model="userName" type="text" id="userName" />
-      </div>
-      <div class="form-group">
-        <label for="displayUsername">Username:</label>
-        <input v-model="displayUsername" type="text" id="displayUsername" />
       </div>
       <div class="form-group">
         <label for="email">Почта:</label>
